@@ -6,7 +6,7 @@ const {
   resgisterValidation,
   loginValidation,
 } = require("../containers/authValidation");
-
+const sendRegisterEmail = require("../containers/sendRegisterEmail");
 //register
 router.post("/register", async (req, res) => {
   //validation
@@ -39,6 +39,7 @@ router.post("/register", async (req, res) => {
       message: error.message,
     });
   }
+  await sendRegisterEmail(req.body);
 });
 //login
 router.post("/login", async (req, res) => {

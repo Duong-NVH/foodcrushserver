@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Location = require("../models/location");
-const verifyToken = require("./verifyToken");
+const verifyToken = require("../containers/verifyToken");
 
 //get all location
 router.get("/", verifyToken, async (req, res) => {
