@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const Location = require("../models/location");
+const verifyToken = require("./verifyToken");
 
 //get all location
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     const locations = await Location.find();
     res.json(locations);
@@ -13,7 +14,7 @@ router.get("/", async (req, res) => {
   }
 });
 //get location by id
-router.get("/:id", getLocation, (req, res) => {
+router.get("/:id", verifyToken, getLocation, (req, res) => {
   res.json(res.location);
 });
 //create location
@@ -34,7 +35,7 @@ router.post("/", async (req, res) => {
   }
 });
 //update location
-router.patch("/:id", getLocation, async (req, res) => {
+router.patch("/:id", verifyToken, getLocation, async (req, res) => {
   const { name, description, address } = req.body;
   if (name != null) res.location.name = name;
   if (description != null) res.location.description = description;
@@ -49,7 +50,7 @@ router.patch("/:id", getLocation, async (req, res) => {
   }
 });
 //delete location
-router.delete("/:id", getLocation, async (req, res) => {
+router.delete("/:id", verifyToken, getLocation, async (req, res) => {
   try {
     await res.location.remove();
     res.json({
