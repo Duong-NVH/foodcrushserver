@@ -18,55 +18,74 @@ router.get("/:id", verifyToken, getLocation, (req, res) => {
   res.json(res.location);
 });
 //create location
-router.post("/", async (req, res) => {
-  const { name, description, address } = req.body;
-  const newLocation = new Location({
-    name,
-    description,
-    address,
-  });
-  try {
-    const loc = await newLocation.save();
-    res.status(201).json(loc);
-  } catch (error) {
+router.post("/", verifyToken, async (req, res) => {
+  if (req.user.role > 0) {
+    const { name, description, address, category } = req.body;
+    const newLocation = new Location({
+      name,
+      description,
+      address,
+      category,
+    });
+    try {
+      const loc = await newLocation.save();
+      res.status(201).json(loc);
+    } catch (error) {
+      res.status(400).json({
+        message: error.message,
+      });
+    }
+  } else {
     res.status(400).json({
-      message: error.message,
+      message: "You're not authorized as an admin",
     });
   }
 });
 //update location
 router.patch("/:id", verifyToken, getLocation, async (req, res) => {
-  const { name, description, address } = req.body;
-  if (name != null) res.location.name = name;
-  if (description != null) res.location.description = description;
-  if (address != null) res.location.address = address;
-  try {
-    const updatedLocation = await res.location.save();
-    res.json(updatedLocation);
-  } catch (error) {
+  if (req.user.role > 0) {
+    const { name, description, address } = req.body;
+    if (name != null) res.location.name = name;
+    if (description != null) res.location.description = description;
+    if (address != null) res.location.address = address;
+    try {
+      const updatedLocation = await res.location.save();
+      res.json(updatedLocation);
+    } catch (error) {
+      res.status(400).json({
+        message: error.message,
+      });
+    }
+  } else {
     res.status(400).json({
-      message: error.message,
+      message: "You're not authorized as an admin",
     });
   }
 });
 //delete location
 router.delete("/:id", verifyToken, getLocation, async (req, res) => {
-  try {
-    await res.location.remove();
-    res.json({
-      message: `Location #${res.location._id} was deleted.`,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
+  if (req.user.role > 0) {
+    try {
+      await res.location.remove();
+      res.json({
+        message: `Location #${res.location._id} was deleted.`,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  } else {
+    res.status(400).json({
+      message: "You're not authorized as an admin",
     });
   }
 });
 
 async function getLocation(req, res, next) {
-  let location = {};
+  let location;
   try {
-    location = await Location.find({ _id: req.params.id });
+    location = await Location.findOne({ _id: req.params.id });
     if (location == null) {
       return res.status(404).json({ message: "Location not found" });
     }
@@ -75,7 +94,7 @@ async function getLocation(req, res, next) {
       message: error.message,
     });
   }
-  res.location = location[0];
+  res.location = location;
   next();
 }
 module.exports = router;

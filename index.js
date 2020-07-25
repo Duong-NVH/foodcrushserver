@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const locationsRouter = require("./routes/locations");
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/users");
 mongoose.connect(process.env.DB_URl, {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -15,6 +16,7 @@ db.once("open", () => console.log("connected to DB"));
 app.use(express.json());
 //private route
 app.use("/api/location", locationsRouter);
+app.use("/api/user", userRouter);
 //auth route
 app.use("/auth", authRouter);
 

@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     min: 6,
   },
+  role: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);
