@@ -4,7 +4,7 @@ require("dotenv").config();
 const locationsRouter = require("./routes/locations");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/users");
-mongoose.connect(process.env.DB_URl, {
+mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
