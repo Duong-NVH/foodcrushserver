@@ -14,6 +14,7 @@ const db = mongoose.connection;
 db.on("error", (error) => console.log(error));
 db.once("open", () => console.log("connected to DB"));
 app.use(express.json());
+app.get("/", (req, res) => res.json({ message: "foodcrush-ed mtfk!" }));
 //private route
 app.use("/api/location", locationsRouter);
 app.use("/api/user", userRouter);
